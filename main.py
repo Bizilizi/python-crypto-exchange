@@ -1,5 +1,5 @@
 from aiohttp import web
-from node.server.app import application_factory
+from exchange.server.app import application_factory
 
 
 if __name__ == "__main__":
