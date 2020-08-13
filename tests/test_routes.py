@@ -36,7 +36,7 @@ class APITestCase(AioHTTPTestCase):
             response = await session.post(
                 f"{self.server_address}/order/create",
                 json={
-                    "account_id": "Vladimir",
+                    "account_name": "Vladimir",
                     "type": "limit",
                     "amount": 1,
                     "price": 2,
@@ -59,7 +59,7 @@ class APITestCase(AioHTTPTestCase):
             create_order = await session.post(
                 f"{self.server_address}/order/create",
                 json={
-                    "account_id": "Ewriji",
+                    "account_name": "Ewriji",
                     "type": "limit",
                     "amount": 1,
                     "price": 2,
@@ -72,7 +72,7 @@ class APITestCase(AioHTTPTestCase):
             response = await session.get(
                 f"{self.server_address}/order",
                 json={
-                    "account_id": "Ewriji",
+                    "account_name": "Ewriji",
                     "order_id": order_creation_data["result"]["order_id"],
                     "symbol_pair": "btc_usdt",
                 },
@@ -95,7 +95,7 @@ class APITestCase(AioHTTPTestCase):
             create_order = await session.post(
                 f"{self.server_address}/order/create",
                 json={
-                    "account_id": "Vladimir",
+                    "account_name": "Vladimir",
                     "type": "limit",
                     "amount": 1,
                     "price": 2,
@@ -107,7 +107,7 @@ class APITestCase(AioHTTPTestCase):
             order_creation_data = await create_order.json()
             response = await session.get(
                 f"{self.server_address}/depth",
-                json={"account_id": "Vladimir", "symbol_pair": "btc_usdt"},
+                json={"account_name": "Vladimir", "symbol_pair": "btc_usdt"},
             )
             assert response.status == 200
             data = await response.json()
@@ -122,7 +122,7 @@ class APITestCase(AioHTTPTestCase):
         async with aiohttp.ClientSession() as session:
             response = await session.get(
                 f"{self.server_address}/account/balance",
-                json={"account_id": "Vladimir", "symbols": ["usdt", "btc", "eth"]},
+                json={"account_name": "Vladimir", "symbols": ["usdt", "btc", "eth"]},
             )
             assert response.status == 200
             data = await response.json()
@@ -135,7 +135,7 @@ class APITestCase(AioHTTPTestCase):
             create_order = await session.post(
                 f"{self.server_address}/order/create",
                 json={
-                    "account_id": "Ewriji",
+                    "account_name": "Ewriji",
                     "type": "limit",
                     "amount": 1,
                     "price": 2,
@@ -153,7 +153,7 @@ class APITestCase(AioHTTPTestCase):
             response = await session.post(
                 f"{self.server_address}/order/cancel",
                 json={
-                    "account_id": "Ewriji",
+                    "account_name": "Ewriji",
                     "symbol_pair": "btc_usdt",
                     "order_id": order_creation_data["result"]["order_id"],
                 },
@@ -171,7 +171,10 @@ class APITestCase(AioHTTPTestCase):
         async with aiohttp.ClientSession() as session:
             create_account = await session.post(
                 f"{self.server_address}/account/create",
-                json={"account_name": "Kolya", "btc": 10, "eth": 15, "usdt": 200},
+                json={
+                    "account_name": "Kolya",
+                    "balances": {"btc": 10, "eth": 15, "usdt": 200},
+                },
             )
             assert create_account.status == 200
             assert "Kolya" in [account.name for account in self.model_manager.accounts]
@@ -223,7 +226,7 @@ class APITestCase(AioHTTPTestCase):
                 response = await session.post(
                     f"{self.server_address}/order/create",
                     json={
-                        "account_id": "Vladimir",
+                        "account_name": "Vladimir",
                         "type": "limit",
                         "amount": 1,
                         "price": 2,

@@ -1,5 +1,4 @@
 import typing as t
-from collections import defaultdict
 
 from aiohttp import web
 from exchange.core.entities import SymbolPair
@@ -20,8 +19,7 @@ exchange_instance = Exchange()
 async def create_account(request: web.Request) -> web.Response:
     json_data = schema.CreateAccountRequest.parse_obj(await request.json())
     exchange_instance.create_acc(
-        json_data.account_name,
-        defaultdict(btc=json_data.btc, eth=json_data.eth, usdt=json_data.usdt),
+        json_data.account_name, json_data.balances,
     )
     return web.Response(text=f"Account {json_data.account_name} was created")
 
@@ -70,19 +68,19 @@ async def get_all_supported_pair(request: web.Request) -> web.Response:
 async def create_order(request: web.Request) -> web.Response:
     order_data = schema.CreateOrderRequest.parse_obj(await request.json())
     pair = SymbolPair(*order_data.symbol_pair.split("_"))
-    acc_name = order_data.account_id
-    if order_data.side == "buy":
+    acc_name = order_data.account_name
+    if order_data.side.lower() == "buy":
         order_side = Order.Side.Buy
-    elif order_data.side == "sell":
+    elif order_data.side.lower() == "sell":
         order_side = Order.Side.Sell
     else:
         return error(415, f"Side expected ether sell or buy, got {order_data.side}")
 
-    if order_data.type == "market":
+    if order_data.type.lower() == "market":
         order = await exchange_instance.create_market(
             pair, order_side, order_data.amount, acc_name
         )
-    elif order_data.type == "limit":
+    elif order_data.type.lower() == "limit":
         order = await exchange_instance.create_limit(
             pair,
             t.cast(float, order_data.price),
@@ -128,7 +126,7 @@ async def get_account_balance(request: web.Request) -> web.Response:
     json_data = schema.AccountBalanceRequest.parse_obj(await request.json())
     answer = {}
     symbols = json_data.symbols
-    acc = exchange_instance.get_account(json_data.account_id)
+    acc = exchange_instance.get_account(json_data.account_name)
     for symbol in symbols:
         answer[symbol] = acc.balance[f"{symbol}"]
     return success(answer)

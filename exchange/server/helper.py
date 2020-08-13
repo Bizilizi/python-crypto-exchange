@@ -76,7 +76,7 @@ class DDoS:
         @wraps(func)
         async def wrapped(request: web.Request) -> web.Response:
             json_data = schema.DDoSCheck.parse_obj(await request.json())
-            key_value = json_data.account_id
+            key_value = json_data.account_name
 
             request_dict[key_value].append(datetime.now())
             request_history = request_dict[key_value]

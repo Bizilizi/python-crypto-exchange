@@ -1,13 +1,11 @@
-import typing as tp
+import typing as t
 
 from pydantic import BaseModel
 
 
 class CreateAccountRequest(BaseModel):
     account_name: str
-    btc: float
-    eth: float
-    usdt: float
+    balances: t.Dict[str, float]
 
 
 class DeleteAccountRequest(BaseModel):
@@ -23,39 +21,39 @@ class DeleteSupportedPair(BaseModel):
 
 
 class CreateOrderRequest(BaseModel):
-    account_id: str
+    account_name: str
     type: str
     amount: float
-    price: tp.Optional[float]
+    price: t.Optional[float]
     side: str
     symbol_pair: str
 
 
 class OrderInfoRequest(BaseModel):
-    account_id: str
+    account_name: str
     symbol_pair: str
     order_id: int
 
 
 class DepthInfoRequest(BaseModel):
-    account_id: str
+    account_name: str
     symbol_pair: str
 
 
 class AccountInfoRequest(BaseModel):
-    account_id: str
+    account_name: str
 
 
 class AccountBalanceRequest(BaseModel):
-    account_id: str
-    symbols: tp.List[str]
+    account_name: str
+    symbols: t.List[str]
 
 
 class OrderCancelRequest(BaseModel):
-    account_id: str
+    account_name: str
     symbol_pair: str
     order_id: int
 
 
 class DDoSCheck(BaseModel):
-    account_id: str
+    account_name: str
