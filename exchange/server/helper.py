@@ -4,7 +4,6 @@ from datetime import datetime
 from functools import wraps
 
 from aiohttp import web
-from aiohttp.web_middlewares import middleware
 from exchange.core.errors import (
     InsufficientFunds,
     OrderCancellationError,
@@ -24,11 +23,11 @@ from . import schema
 
 # Status Pages middleware
 
+_Handler = t.Callable[[web.Request], t.Awaitable[web.StreamResponse]]
 
-@middleware
-async def status_pages(
-    request: web.Request, handler: t.Callable[[web.Request], t.Awaitable[web.Response]]
-) -> web.Response:
+
+@web.middleware
+async def status_pages(request: web.Request, handler: _Handler) -> web.StreamResponse:
     try:
         return await handler(request)
     except ValidationError as e:
