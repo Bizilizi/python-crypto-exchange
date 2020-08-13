@@ -1,0 +1,11 @@
+.idea/
+.mypy_cache/
+.pytest_cache/
+build/
+venv/
+*.c
+*.so
+*.o
+*.log
+__pycache__/
+*.pyc

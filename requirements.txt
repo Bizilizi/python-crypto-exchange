@@ -1,0 +1,14 @@
+pydantic
+numpy
+sqlalchemy
+typeguard
+pytest
+pytest-asyncio
+flake8
+mypy
+aiohttp
+aiohttp_proxy
+black
+gino
+pytest-lazy-fixture
+python-socketio
