@@ -1,3 +1,4 @@
+import asyncio
 import typing as t
 from collections import defaultdict
 from enum import Enum, auto
@@ -310,6 +311,8 @@ class Exchange(EventEmitter[ExchangeEvent]):
             # Delete order if it was matched
             if report.match_type == MatchReportType.Full:
                 del account.open_orders[order.order_id]
+
+            await asyncio.sleep(0)
 
         # Send Update Event:
         for price, side in updated_prices:
